@@ -1,8 +1,10 @@
 import express from 'express';
 import morgan from 'morgan';
 import helmet from 'helmet';
+import multer from 'multer';
 import cors from 'cors';
 
+import csv from 'papaparse';
 import * as middlewares from './middlewares';
 import api from './api';
 import MessageResponse from './interfaces/MessageResponse';
@@ -10,6 +12,7 @@ import MessageResponse from './interfaces/MessageResponse';
 require('dotenv').config();
 
 const app = express();
+const file = multer();
 
 app.use(morgan('dev'));
 app.use(helmet());
@@ -23,8 +26,14 @@ app.get<{}, MessageResponse>('/', (req, res) => {
   });
 });
 
-app.post<{}, MessageResponse>('/file', (req, res) => {
-  console.log(req.body);
+app.post<{}, MessageResponse>('/file', file.single('file'), (req, res) => {
+let data = null;
+
+  if(req.file){
+    data = csv.parse(req.file.buffer.toString(), {header: true})
+
+    console.log(data);
+  }
 
   res.json({
     message: 'Hello world!',
