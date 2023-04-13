@@ -26,18 +26,14 @@ app.get<{}, MessageResponse>('/', (req, res) => {
   });
 });
 
-app.post<{}, MessageResponse>('/file', file.single('file'), (req, res) => {
-let data = null;
+app.post<{}, any>('/file', file.single('file'), (req, res) => {
+  let data = null;
 
-  if(req.file){
-    data = csv.parse(req.file.buffer.toString(), {header: true})
-
-    console.log(data);
+  if (req.file) {
+    data = csv.parse(req.file.buffer.toString(), { header: true });
   }
 
-  res.json({
-    message: 'Hello world!',
-  });
+  return res.status(200).json(data);
 });
 
 app.use('/api/v1', api);
