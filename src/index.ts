@@ -1,8 +1,13 @@
 import app from './app';
+import { AppDataSource } from './data-source';
+import { User } from './entity/User';
 
 const port = process.env.PORT || 5000;
-app.listen(port, () => {
-  /* eslint-disable no-console */
-  console.log(`Listening: http://localhost:${port}`);
-  /* eslint-enable no-console */
-});
+
+AppDataSource.initialize()
+  .then(async () => {
+    app.listen(port, () => {
+      console.log(`Listening: http://localhost:${port}`);
+    });
+  })
+  .catch((error) => console.log(error));
