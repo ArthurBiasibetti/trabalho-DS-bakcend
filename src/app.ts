@@ -8,8 +8,9 @@ import csv from 'papaparse';
 import * as middlewares from './middlewares';
 import api from './api';
 import MessageResponse from './interfaces/MessageResponse';
+import dotenv from 'dotenv';
 
-require('dotenv').config();
+dotenv.config();
 
 const app = express();
 const file = multer();
@@ -20,13 +21,13 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.get<{}, MessageResponse>('/', (req, res) => {
+app.get<any, MessageResponse>('/', (req, res) => {
   res.json({
     message: 'Hello world!',
   });
 });
 
-app.post<{}, any>('/file', file.single('file'), (req, res) => {
+app.post<any, any>('/file', file.single('file'), (req, res) => {
   let data = null;
 
   if (req.file) {
