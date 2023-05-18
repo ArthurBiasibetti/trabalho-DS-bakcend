@@ -4,11 +4,11 @@ import {
   Get,
   Path,
   Post,
-  Query,
   Route,
   SuccessResponse,
   Example,
 } from 'tsoa';
+import { ManagerModel } from '../models/manager';
 import {
   ManagersService,
   ManagerGetResponse,
@@ -16,7 +16,7 @@ import {
 } from '../services/manager';
 
 @Route('manager')
-export class UsersController extends Controller {
+export class ManagerController extends Controller {
   /**
    * Retrieves the details of an existing user.
    * Supply the unique user ID from either and receive corresponding user details.
@@ -29,20 +29,19 @@ export class UsersController extends Controller {
     email: 'hello@tsoa.com',
   })
   @Get('{userId}')
-  public async getUser(
-    @Path() userId: number,
-    @Query() name?: string
-  ): Promise<ManagerGetResponse> {
-    return new ManagersService().get(userId, name);
+  public async getUser(@Path() userId: number): Promise<ManagerGetResponse> {
+    const foundManager = await new ManagersService().get(userId);
+
+    return foundManager;
   }
 
   @SuccessResponse('201', 'Created') // Custom success response
   @Post()
   public async createUser(
     @Body() requestBody: ManagerCreationParams
-  ): Promise<void> {
-    this.setStatus(201); // set return status 201
-    new ManagersService().create(requestBody);
-    return;
+  ): Promise<ManagerModel> {
+    const response = new ManagersService().create(requestBody);
+
+    return response;
   }
 }
