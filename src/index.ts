@@ -8,7 +8,6 @@ AppDataSource.initialize()
   .then(async () => {
     app.listen(port, () => {
       console.log(`Listening: http://localhost:${port}`);
-      AppDataSource.manager.find(User);
     });
   })
   .catch((error) => console.log(error));
