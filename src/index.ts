@@ -1,6 +1,5 @@
 import app from './app';
 import { AppDataSource } from './config/database/data-source';
-import { User } from './entity/User';
 
 const port = process.env.PORT || 5000;
 
