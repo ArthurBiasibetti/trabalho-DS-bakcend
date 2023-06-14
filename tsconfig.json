@@ -12,7 +12,8 @@
     "skipLibCheck": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "strictPropertyInitialization": false
+    "strictPropertyInitialization": false,
+    "resolveJsonModule": true
   },
   "include": ["./*.js", "src/**/*.ts", "test/**/*.ts"]
 }

@@ -6,7 +6,7 @@ const port = process.env.PORT || 5000;
 AppDataSource.initialize()
   .then(async () => {
     app.listen(port, () => {
-      console.log(`Listening: http://localhost:${port}`);
+      console.log(`API Listening: http://localhost:${port}`);
     });
   })
-  .catch((error) => console.log(error));
+  .catch((error: Error) => console.log(error));

@@ -1,14 +1,19 @@
-import express from 'express';
+import express, {
+  Response as ExResponse,
+  Request as ExRequest,
+  NextFunction,
+} from 'express';
+import swaggerUi from 'swagger-ui-express';
 import morgan from 'morgan';
 import helmet from 'helmet';
 import multer from 'multer';
 import cors from 'cors';
 
 import csv from 'papaparse';
-import * as middlewares from './middlewares';
-import api from './api';
-import MessageResponse from './interfaces/MessageResponse';
 import dotenv from 'dotenv';
+
+import { RegisterRoutes } from '../dist/routes';
+import { NotFoundError, errorHandler } from './Errors';
 
 dotenv.config();
 
@@ -21,13 +26,11 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.get<any, MessageResponse>('/', (req, res) => {
-  res.json({
-    message: 'Hello world!',
-  });
+app.use('/docs', swaggerUi.serve, async (_req: ExRequest, res: ExResponse) => {
+  return res.send(swaggerUi.generateHTML(await import('../dist/swagger.json')));
 });
 
-app.post<any, any>('/file', file.single('file'), (req, res) => {
+app.post<string, any>('/file', file.single('file'), (req, res) => {
   let data = null;
 
   if (req.file) {
@@ -37,9 +40,13 @@ app.post<any, any>('/file', file.single('file'), (req, res) => {
   return res.status(200).json(data);
 });
 
-app.use('/api/v1', api);
+RegisterRoutes(app);
 
-app.use(middlewares.notFound);
-app.use(middlewares.errorHandler);
+app.use((req: ExRequest, res: ExResponse, next: NextFunction) => {
+  const error = new NotFoundError(`🔍 - Route Not Found - ${req.originalUrl}`);
+  next(error);
+});
+
+app.use(errorHandler);
 
 export default app;
