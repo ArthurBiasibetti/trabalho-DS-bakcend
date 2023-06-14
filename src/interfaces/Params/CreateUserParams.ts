@@ -1,3 +1,4 @@
 import { UserModel } from '../../models';
 
-export type ICreateUserParams = Omit<UserModel, 'id'>;
+export interface ICreateUserParams
+  extends Omit<UserModel, 'id' | 'createdAt' | 'updatedAt'> {}

@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { ValidateError } from 'tsoa';
 import { NotFoundError } from './instances/NotFoundError';
+import { UnauthorizedError } from './instances/UnauthorizedError';
 
 export function errorHandler(
   err: unknown,
@@ -18,6 +19,12 @@ export function errorHandler(
 
   if (err instanceof NotFoundError) {
     return res.status(404).json({
+      message: err.message,
+    });
+  }
+
+  if (err instanceof UnauthorizedError) {
+    return res.status(401).json({
       message: err.message,
     });
   }

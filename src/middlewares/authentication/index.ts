@@ -1,35 +1,30 @@
 import * as express from 'express';
-import * as jwt from 'jsonwebtoken';
+import { get } from 'lodash';
+import { verifyJwt } from '../../utils/security';
+import { JwtPayload } from 'jsonwebtoken';
 
 export function expressAuthentication(
   request: express.Request,
   securityName: string,
   scopes?: string[]
-): Promise<any> {
+): any {
   if (securityName === 'jwt') {
-    const token =
-      request.body.token ||
-      request.query.token ||
-      request.headers['x-access-token'];
+    const accessToken = get(request, 'headers.authorization', '').replace(
+      /^Bearer\s/,
+      ''
+    );
 
-    return new Promise((resolve, reject) => {
-      if (!token) {
-        reject(new Error('No token provided'));
-      }
-      jwt.verify(token, '[secret]', function (err: any, decoded: any) {
-        if (err) {
-          reject(err);
-        } else {
-          if (scopes) {
-            for (const scope of scopes) {
-              if (!decoded.scopes.includes(scope)) {
-                reject(new Error('JWT does not contain required scope.'));
-              }
-            }
-          }
-          resolve(decoded);
-        }
-      });
-    });
+    if (!accessToken && request.res) {
+      return request.res
+        .status(401)
+        .json({ message: 'User is not authenticated' });
+    }
+
+    const user = verifyJwt(accessToken);
+
+    if (user.decoded && request.res?.locals && request.next) {
+      request.res.locals = user.decoded as JwtPayload;
+      request.next();
+    }
   }
 }

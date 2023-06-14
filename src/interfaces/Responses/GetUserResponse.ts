@@ -1,3 +1,3 @@
 import { UserModel } from '../../models';
 
-export type IGetUserResponse = Omit<UserModel, 'password'>;
+export interface IGetUserResponse extends Omit<UserModel, 'password'> {}

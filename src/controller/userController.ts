@@ -7,15 +7,17 @@ import {
   Route,
   SuccessResponse,
   Example,
+  Security,
 } from 'tsoa';
 import { UserService } from '../services/user';
 import {
   ICreateUserParams,
   ICreateUserResponse,
   IGetUserResponse,
+  ILoginUserParams,
 } from '../interfaces';
 
-@Route('manager')
+@Route('user')
 export class UserController extends Controller {
   #userService = new UserService();
 
@@ -29,15 +31,19 @@ export class UserController extends Controller {
     id: 1,
     name: 'tsoa manager',
     email: 'hello@tsoa.com',
+    createdAt: new Date(),
+    updatedAt: new Date(),
   })
+  @Security('jwt')
   @Get('{userId}')
   public async getUser(@Path() userId: number): Promise<IGetUserResponse> {
+    console.log(this.getHeader('user'));
     const foundManager = await this.#userService.get(userId);
 
     return foundManager;
   }
 
-  @SuccessResponse('201', 'Created') // Custom success response
+  @SuccessResponse('201', 'Created')
   @Post()
   public async createUser(
     @Body() requestBody: ICreateUserParams
@@ -45,5 +51,13 @@ export class UserController extends Controller {
     const response = await this.#userService.create(requestBody);
 
     return response;
+  }
+
+  @SuccessResponse('201', 'Session Created')
+  @Post('login')
+  public async userLogin(@Body() requestBody: ILoginUserParams) {
+    const token = await this.#userService.login(requestBody);
+
+    this.setHeader('token', `Bearer ${token}`);
   }
 }

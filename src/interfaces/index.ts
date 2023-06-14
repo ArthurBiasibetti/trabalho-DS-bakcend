@@ -6,4 +6,4 @@ export * from './Responses/CreateUserResponse';
 
 //Params
 export * from './Params/CreateUserParams';
-export * from './Params/CreateUserParams';
+export * from './Params/LoginUserParams';
