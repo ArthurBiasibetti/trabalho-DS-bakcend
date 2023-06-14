@@ -4,9 +4,18 @@
   "controllerPathGlobs": ["src/**/*Controller.ts"],
   "spec": {
     "outputDirectory": "dist",
-    "specVersion": 3
+    "specVersion": 3,
+    "securityDefinitions": {
+      "jwt": {
+        "type": "http",
+        "name": "bearer",
+        "in": "header",
+        "scheme": "bearer"
+      }
+    }
   },
   "routes": {
+    "authenticationModule": "./src/middlewares/authentication",
     "routesDir": "dist"
   }
 }
