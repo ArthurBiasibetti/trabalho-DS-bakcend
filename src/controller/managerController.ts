@@ -8,29 +8,31 @@ import {
   SuccessResponse,
   Example,
 } from 'tsoa';
-import { ManagerModel } from '../models/manager';
+import { UserService } from '../services/user';
 import {
-  ManagersService,
-  ManagerGetResponse,
-  ManagerCreationParams,
-} from '../services/manager';
+  ICreateUserParams,
+  ICreateUserResponse,
+  IGetUserResponse,
+} from '../interfaces';
 
 @Route('manager')
-export class ManagerController extends Controller {
+export class UserController extends Controller {
+  #userService = new UserService();
+
   /**
    * Retrieves the details of an existing user.
    * Supply the unique user ID from either and receive corresponding user details.
    * @param userId The user's identifier
    * @param name Provide a username to display
    */
-  @Example<ManagerGetResponse>({
+  @Example<IGetUserResponse>({
     id: 1,
     name: 'tsoa manager',
     email: 'hello@tsoa.com',
   })
   @Get('{userId}')
-  public async getUser(@Path() userId: number): Promise<ManagerGetResponse> {
-    const foundManager = await new ManagersService().get(userId);
+  public async getUser(@Path() userId: number): Promise<IGetUserResponse> {
+    const foundManager = await this.#userService.get(userId);
 
     return foundManager;
   }
@@ -38,9 +40,9 @@ export class ManagerController extends Controller {
   @SuccessResponse('201', 'Created') // Custom success response
   @Post()
   public async createUser(
-    @Body() requestBody: ManagerCreationParams
-  ): Promise<ManagerModel> {
-    const response = new ManagersService().create(requestBody);
+    @Body() requestBody: ICreateUserParams
+  ): Promise<ICreateUserResponse> {
+    const response = await this.#userService.create(requestBody);
 
     return response;
   }

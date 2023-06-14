@@ -1,4 +1,4 @@
-export interface ManagerModel {
+export declare interface UserModel {
   id: number;
   name: string;
   email: string;
