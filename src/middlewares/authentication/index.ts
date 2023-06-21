@@ -1,30 +1,30 @@
 import * as express from 'express';
 import { get } from 'lodash';
+import * as jwt from 'jsonwebtoken';
 import { verifyJwt } from '../../utils/security';
-import { JwtPayload } from 'jsonwebtoken';
+import { UnauthorizedError } from '../../Errors/instances/UnauthorizedError';
 
 export function expressAuthentication(
   request: express.Request,
   securityName: string,
   scopes?: string[]
-): any {
-  if (securityName === 'jwt') {
-    const accessToken = get(request, 'headers.authorization', '').replace(
-      /^Bearer\s/,
-      ''
-    );
+): Promise<any> {
+  const token = get(request, 'headers.authorization', '').replace(
+    /Bearer\s/,
+    ''
+  );
 
-    if (!accessToken && request.res) {
-      return request.res
-        .status(401)
-        .json({ message: 'User is not authenticated' });
+  return new Promise((resolve, reject) => {
+    if (!token) {
+      reject(new Error('No token provided'));
     }
 
-    const user = verifyJwt(accessToken);
+    const jwtData = verifyJwt(token);
 
-    if (user.decoded && request.res?.locals && request.next) {
-      request.res.locals = user.decoded as JwtPayload;
-      request.next();
+    if (!jwtData.decoded) {
+      reject(new UnauthorizedError('JWT Invalido!'));
     }
-  }
+
+    resolve(jwtData.decoded);
+  });
 }

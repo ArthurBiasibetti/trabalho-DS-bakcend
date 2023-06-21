@@ -8,6 +8,7 @@ import {
   SuccessResponse,
   Example,
   Security,
+  Request,
 } from 'tsoa';
 import { UserService } from '../services/user';
 import {
@@ -36,8 +37,11 @@ export class UserController extends Controller {
   })
   @Security('jwt')
   @Get('{userId}')
-  public async getUser(@Path() userId: number): Promise<IGetUserResponse> {
-    console.log(this.getHeader('user'));
+  public async getUser(
+    @Request() request: any,
+    @Path() userId: number
+  ): Promise<IGetUserResponse> {
+    console.log(request.user.id);
     const foundManager = await this.#userService.get(userId);
 
     return foundManager;
