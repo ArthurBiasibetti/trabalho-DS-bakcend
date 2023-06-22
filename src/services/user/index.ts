@@ -1,5 +1,5 @@
 import { AppDataSource } from '../../config/database/data-source';
-import { User } from '../../entity/User';
+import { UsuarioModel } from '../../entity/User';
 
 import {
   ICreateUserResponse,
@@ -14,7 +14,7 @@ import { UnauthorizedError } from '../../Errors/instances/UnauthorizedError';
 
 // A post request should not contain an id.
 export class UserService {
-  #userRepository = AppDataSource.getRepository(User);
+  #userRepository = AppDataSource.getRepository(UsuarioModel);
 
   public async get(id: number): Promise<IGetUserResponse> {
     const user = await this.#userRepository.findOneBy({ id });
