@@ -7,15 +7,15 @@ import {
   OneToMany,
 } from 'typeorm';
 import { UserModel } from '../models';
-import { UsuarioModel } from './User';
+import { UsuarioModel } from './Usuario';
 
-@Entity('cargos')
+@Entity('cargo')
 export class CargoModel {
   @PrimaryGeneratedColumn({ primaryKeyConstraintName: 'pk_cargo_id' })
   id: number;
 
   @Column()
-  name: string;
+  nome: string;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;

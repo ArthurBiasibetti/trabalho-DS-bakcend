@@ -1,5 +1,5 @@
 import { AppDataSource } from '../../config/database/data-source';
-import { UsuarioModel } from '../../entity/User';
+import { UsuarioModel } from '../../entity/Usuario';
 
 import {
   ICreateUserResponse,

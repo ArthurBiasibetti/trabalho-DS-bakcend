@@ -1,29 +1,32 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  CreateDateColumn,
-  UpdateDateColumn,
-  PrimaryColumn,
-  ManyToOne,
-  JoinColumn,
-} from 'typeorm';
-import { UserModel } from '../models';
-import { UsuarioModel } from './User';
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
+import { EspacoModel } from './Espaco';
+import { InventarioModel } from './Inventario';
+import { UsuarioModel } from './Usuario';
+
+export enum StatusEspacoInventario {
+  PENDENTE_INICIO,
+  INICIADO,
+  COMPLETO,
+}
 
 @Entity('espaco_inventario')
 export class EspacoInventarioModel {
-  @PrimaryColumn()
-  id_espaco: number;
+  // @PrimaryColumn()
+  // id_espaco: number;
+
+  // @PrimaryColumn()
+  // id_inventario: number;
 
   @PrimaryColumn()
-  id_inventario: number;
-
-  @ManyToOne(() => UsuarioModel, (inventario) => inventario.patrimonios)
-  @JoinColumn([{ name: 'inventario', referencedColumnName: 'id' }])
+  @ManyToOne(
+    () => InventarioModel,
+    (inventario) => inventario.espacosInventario
+  )
+  @JoinColumn()
   inventario: InventarioModel;
 
   @ManyToOne(() => UsuarioModel, (responsavel) => responsavel.espacosInventario)
+  @JoinColumn()
   responsavel: UsuarioModel;
 
   @Column({ name: 'quantidade_patrimonios', type: 'integer' })
@@ -32,6 +35,14 @@ export class EspacoInventarioModel {
   @Column({ name: 'patrimonios_lidos', type: 'integer' })
   patrimoniosLidos: number;
 
-  @Column({ name: 'patrimonios_lidos', type: 'enum' })
+  @Column({ name: 'status', type: 'enum', enum: StatusEspacoInventario })
   status: StatusEspacoInventario;
+
+  @PrimaryColumn()
+  @ManyToOne(
+    (type) => EspacoModel,
+    (espacoModel) => espacoModel.espacosInventario
+  )
+  @JoinColumn()
+  espaco: EspacoModel;
 }

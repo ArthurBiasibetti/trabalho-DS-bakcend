@@ -1,15 +1,17 @@
 import {
-  Entity,
-  PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
-  UpdateDateColumn,
-  PrimaryColumn,
-  ManyToOne,
+  Entity,
   JoinColumn,
+  ManyToOne,
+  PrimaryColumn,
 } from 'typeorm';
-import { UserModel } from '../models';
+import { InventarioModel } from './Inventario';
 
+export enum TiposCriacaoPatrimonio {
+  IMPORTADO,
+  ON_FLY,
+}
 @Entity('patrimonios')
 export class PatrimonioModel {
   @PrimaryColumn()
@@ -17,7 +19,7 @@ export class PatrimonioModel {
 
   @PrimaryColumn()
   @ManyToOne(() => InventarioModel, (inventario) => inventario.patrimonios)
-  @JoinColumn([{ name: 'inventario', referencedColumnName: 'id' }])
+  @JoinColumn()
   inventario: InventarioModel;
 
   @Column({ name: 'descricao', type: 'text' })
@@ -35,6 +37,6 @@ export class PatrimonioModel {
   @Column({ name: 'observacao' })
   observacao: string;
 
-  @Column({ name: 'tipo_criacao' })
-  tipoCriacao: number; //TODO ENUM
+  @Column({ name: 'tipo_criacao', enum: TiposCriacaoPatrimonio })
+  tipoCriacao: TiposCriacaoPatrimonio;
 }

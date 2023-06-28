@@ -12,8 +12,9 @@ import {
 import { UserModel } from '../models';
 import { CargoModel } from './Cargo';
 import { EspacoInventarioModel } from './EspacoInventario';
+import { InventarioModel } from './Inventario';
 
-@Entity('usuarios')
+@Entity('usuario')
 export class UsuarioModel {
   @PrimaryGeneratedColumn({ primaryKeyConstraintName: 'pk_user_id' })
   id: number;
@@ -36,4 +37,7 @@ export class UsuarioModel {
     (espacoInventario) => espacoInventario.responsavel
   )
   espacosInventario: EspacoInventarioModel;
+
+  @OneToMany(() => InventarioModel, (inventario) => inventario.responsavel)
+  inventarios: InventarioModel;
 }
